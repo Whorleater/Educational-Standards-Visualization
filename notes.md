@@ -4,3 +4,4 @@
 - See [draft](draft.sketch) or [example](http://projects.flowingdata.com/tut/interactive_network_demo/)
 - [Tree example](http://bl.ocks.org/mbostock/4339083), [flat array tree example](http://bl.ocks.org/d3noob/8329404)
 - Two opposing trees implementing the [Reingold-Tilford](http://bl.ocks.org/mbostock/4339184) algorithm, having sankey-esque connections
+- http://asn.jesandco.org/resources/D10003B9 & https://flowingdata.com/2012/08/02/how-to-make-an-interactive-network-visualization/
