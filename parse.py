@@ -105,3 +105,11 @@ writeJsonFromList("data/t1.json", t1root, "t1.json")
 #t2.json
 t2root = "http://asn.jesandco.org/resources/D100029D"
 writeJsonFromList("data/t2.json", t2root, "t2.json")
+
+#t3.json
+t3root = "http://asn.jesandco.org/resources/D1000124"
+writeJsonFromList("data/t3.json", t3root, "t3.json")
+
+#t4.json 
+t4root = "http://asn.jesandco.org/resources/D1000379"
+writeJsonFromList("data/t4.json", t4root, "t4.json")
