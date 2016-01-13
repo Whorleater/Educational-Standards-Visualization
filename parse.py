@@ -98,7 +98,6 @@ uniqueSubjectNotations.sort()
 #print(len(uniqueSubjectNotations))
 
 #t1.json
-
 t1root = "http://asn.jesandco.org/resources/S113BA1C"
 writeJsonFromList("data/t1.json", t1root, "t1.json")
 
@@ -110,6 +109,14 @@ writeJsonFromList("data/t2.json", t2root, "t2.json")
 t3root = "http://asn.jesandco.org/resources/D1000124"
 writeJsonFromList("data/t3.json", t3root, "t3.json")
 
-#t4.json 
+#t4.json
 t4root = "http://asn.jesandco.org/resources/D1000379"
 writeJsonFromList("data/t4.json", t4root, "t4.json")
+
+#s1.json
+s1root = "http://asn.jesandco.org/resources/D10003FB"
+writeJsonFromList("data/s1.json", s1root, "s1.json")
+
+#s2.json 
+s2root = "http://asn.jesandco.org/resources/D10003FC"
+writeJsonFromList("data/s2.json", s2root, "s2.json")
