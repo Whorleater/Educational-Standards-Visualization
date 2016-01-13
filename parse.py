@@ -62,7 +62,10 @@ def printNode(l, data, node, level):
 def writeJsonFromList(dataLocation, root, outputName): 
     with open(dataLocation) as data_file:
         data = json.load(data_file)
+    jsonParent = {}
     jsonData = {}
+    jsonParent["name"] = outputName
+    jsonParent["children"] = []
     sortedList = []
     printNode(sortedList, data, root, 0)
     
@@ -74,15 +77,16 @@ def writeJsonFromList(dataLocation, root, outputName):
         child = dictionary[childUri]
         parent = writeRecursive(child, sortedList, dictionary)
         jsonData[childUri] = parent
-
+    for key in jsonData:
+        jsonParent["children"].append(jsonData[key])
     with open("revised-data/{}".format(outputName), "w") as f:
-        f.write(json.dumps(jsonData, sort_keys=True, indent=4, separators=(',', ': ')))
+        f.write(json.dumps(jsonParent, sort_keys=True, indent=4, separators=(',', ': ')))
                 
              
 def writeRecursive(item, sortedList, dictionary):
     itemDictionary = {}
     itemDictionary["ID"] = item.ID
-    itemDictionary["description"] = item.description
+    itemDictionary["name"] = "" if len(item.description) == 1 else item.description
     itemDictionary["subject"] = item.subject
     itemDictionary["educationLevel"] = item.educationLevel
     itemDictionary["uri"] = item.uri
@@ -98,7 +102,7 @@ uniqueSubjectNotations.sort()
 #print(len(uniqueSubjectNotations))
 
 #t1.json
-t1root = "http://asn.jesandco.org/resources/S113BA1C"
+t1root = "http://asn.jesandco.org/resources/D10003B9"
 writeJsonFromList("data/t1.json", t1root, "t1.json")
 
 #t2.json
