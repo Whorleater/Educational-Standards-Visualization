@@ -7,3 +7,4 @@
 - [Example of a node implementation](https://flowingdata.com/2012/08/02/how-to-make-an-interactive-network-visualization/)
 - Use [this json viewer](http://jsonviewer.stack.hu/) for exploring the extremely hard to read json files
 - Tree layout is supposed to replicate: [http://asn.jesandco.org/resources/D1000379](http://asn.jesandco.org/resources/D1000379)
+- See [http://bl.ocks.org/robschmuecker/7926762](http://bl.ocks.org/robschmuecker/7926762) for an idea on zoomable layouts
