@@ -28,8 +28,8 @@ class standards:
 
 
 def printNode(l, data, node, level):
-    currentNodeDescription = str(data[node][description][0]["value"])
-
+    currentNodeDescription = str(data[node][description][0]["value"].encode('ascii','ignore'))
+    #pprint(currentNodeDescription)
     if (data[node].get(listID)):
         currentNodeID = data[node][listID][0]["value"]
     elif (data[node].get(statementNotation)): 
@@ -65,17 +65,18 @@ def writeJsonFromList(dataLocation, root, outputName):
     jsonData = {}
     sortedList = []
     printNode(sortedList, data, root, 0)
+    
     dictionary = {}
     for item in sortedList:
         dictionary[item.uri] = item
         
-    for item in sortedList: 
-        if (len(item.ID) == 2):
-            parent = writeRecursive(item, sortedList, dictionary)
-            jsonData[item.uri] = parent
-    f = open("revised-data/{}".format(outputName), "w")
-    f.write(json.dumps(jsonData, sort_keys=True, indent=4, separators=(',', ': ')))
-    f.close()
+    for childUri in dictionary[root].children: 
+        child = dictionary[childUri]
+        parent = writeRecursive(child, sortedList, dictionary)
+        jsonData[childUri] = parent
+
+    with open("revised-data/{}".format(outputName), "w") as f:
+        f.write(json.dumps(jsonData, sort_keys=True, indent=4, separators=(',', ': ')))
                 
              
 def writeRecursive(item, sortedList, dictionary):
@@ -87,8 +88,7 @@ def writeRecursive(item, sortedList, dictionary):
     itemDictionary["uri"] = item.uri
     itemDictionary["children"] = []
     for child in item.children:
-        itemDictionary["children"].append(writeRecursive(dictionary[child], sortedList, dictionary))
-        
+        itemDictionary["children"].append(writeRecursive(dictionary[child], sortedList, dictionary))    
     return itemDictionary
 #t1-s1
 t1s1 = pd.read_csv("data/t1-s1.csv")
@@ -99,8 +99,9 @@ uniqueSubjectNotations.sort()
 
 #t1.json
 
-t1root = "http://asn.jesandco.org/resources/D10003B9"
+t1root = "http://asn.jesandco.org/resources/S113BA1C"
 writeJsonFromList("data/t1.json", t1root, "t1.json")
 
 #t2.json
-t2root = ""
+t2root = "http://asn.jesandco.org/resources/D100029D"
+writeJsonFromList("data/t2.json", t2root, "t2.json")
