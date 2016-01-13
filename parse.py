@@ -65,6 +65,7 @@ def writeJsonFromList(dataLocation, root, outputName):
     jsonParent = {}
     jsonData = {}
     jsonParent["name"] = outputName
+    jsonParent["ID"] = outputName
     jsonParent["children"] = []
     sortedList = []
     printNode(sortedList, data, root, 0)

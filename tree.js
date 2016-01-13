@@ -29,8 +29,12 @@ treeJSON = d3.json("revised-data/s1.json", function(error, treeData) {
         });
 
     //a function to split the string into multiple lines
-    function strsplit(str) {
-        var out = str.slice(0, 30) + "\n" + str.slice(30);
+    function strsplit(name, ID) {
+        ID = typeof ID !== 'undefined' ? ID : ""
+        var out = ID;
+        if (ID.length == 0) {
+            out = name
+        }
         return out;
     }
 
@@ -405,7 +409,8 @@ treeJSON = d3.json("revised-data/s1.json", function(error, treeData) {
                 return d.children || d._children ? "end" : "start";
             })
             .text(function(d) {
-                return strsplit(d.name);
+                console.log(d)
+                return strsplit(d.name, d.ID);
             })
             .style("fill-opacity", 0);
 
@@ -432,7 +437,12 @@ treeJSON = d3.json("revised-data/s1.json", function(error, treeData) {
                 return d.children || d._children ? "end" : "start";
             })
             .text(function(d) {
-                return strsplit(d.name);
+                if (d.hasOwnProperty("ID")) {
+                    return strsplit(d.name. d.ID);
+                }  
+                else {
+                    return strsplit(d.name)
+                }
             });
 
         // Change the circle fill depending on whether it has children and is collapsed
