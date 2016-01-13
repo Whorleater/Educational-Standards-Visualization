@@ -1,4 +1,30 @@
 {
+  "http://asn.jesandco.org/resources/D10003B9.xml" : {
+    "http://xmlns.com/foaf/0.1/primaryTopic" : [
+      { "value" : "http://asn.jesandco.org/resources/D10003B9", "type" : "uri" }
+    ],
+    "http://purl.org/dc/terms/rightsHolder" : [
+      { "value" : "Desire2Learn Incorporated", "type" : "literal", "datatype" : "http://www.w3.org/2001/XMLSchema#string" }
+    ],
+    "http://purl.org/dc/terms/modified" : [
+      { "value" : "2015-05-07T20:39:15-04:00", "type" : "literal", "datatype" : "http://www.w3.org/2001/XMLSchema#date" }
+    ],
+    "http://purl.org/dc/terms/created" : [
+      { "value" : "2011-03-02T10:05:00-05:00", "type" : "literal", "datatype" : "http://www.w3.org/2001/XMLSchema#date" }
+    ],
+    "http://creativecommons.org/ns#license" : [
+      { "value" : "http://creativecommons.org/licenses/by/3.0/us/", "type" : "uri" }
+    ],
+    "http://creativecommons.org/ns#attributionURL" : [
+      { "value" : "http://asn.jesandco.org/resources/D10003B9", "type" : "uri" }
+    ],
+    "http://creativecommons.org/ns#attributionName" : [
+      { "value" : "Desire2Learn Incorporated", "type" : "literal", "datatype" : "http://www.w3.org/2001/XMLSchema#string" }
+    ],
+    "http://purl.org/ASN/schema/core/exportVersion" : [
+      { "value" : "http://purl.org/ASN/scheme/ASNExport/3.1.0", "type" : "uri" }
+    ]
+  },
 
   "http://asn.jesandco.org/resources/D10003B9" : {
     "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [
@@ -407,7 +433,7 @@
       { "value" : "http://purl.org/ASN/scheme/ASNEducationLevel/10", "type" : "uri" },
       { "value" : "http://purl.org/ASN/scheme/ASNEducationLevel/11", "type" : "uri" },
       { "value" : "http://purl.org/ASN/scheme/ASNEducationLevel/12", "type" : "uri" }
-    ],printNode
+    ],
     "http://purl.org/dc/terms/subject" : [
       { "value" : "http://purl.org/ASN/scheme/ASNTopic/libMedia-InfoLit", "type" : "uri" }
     ],

@@ -56,35 +56,58 @@ def printNode(l, data, node, level):
             level += 1
             printNode(l, data, node, level)
 
-def writeJson(data, sortedList, dictionary):
-    #copy the data
-    dataCopy = data
+# def writeJson(data, sortedList, dictionary):
+#     #copy the data
+#     dataCopy = data
+#
+#     #for each first level, start the recursion
+#     for item in sortedList:
+#         if (len(item.ID) == 2):
+#             #empty out the child array in the copy
+#             dataCopy[item.uri][hasChild] = []
+#             #for each child in the first level
+#             for child in item.children:
+#                 writeRecursive(dataCopy, sortedList, dictionary, child, dataCopy[item.uri][hasChild])
+#
+#     #prune all the ones that don't have children
+#     for key in dataCopy.keys():
+#         if ((dictionary[key].hasChildren) == False):
+#             dataCopy.pop(key, None)
+#     pprint(json.dumps(dataCopy))
+#
+# def writeRecursive(dataCopy, sortedList, dictionary, uri, childArray):
+#     #see if the next layer has children, if it does, recursive another level, if it doesn't, just append to the child array
+#
+#     if(dictionary[uri].hasChildren):
+#         for child in dictionary[uri].children:
+#                 writeRecursive(dataCopy, sortedList, dictionary, child, dataCopy[uri][hasChild])
+#
+#     childArray.append(dataCopy[uri])
+#
     
-    #for each first level, start the recursion
-    for item in sortedList:
+def writeJsonFromList(sortedList, dictionary): 
+    jsonData = {}
+    for item in sortedList: 
         if (len(item.ID) == 2):
-            #empty out the child array in the copy
-            dataCopy[item.uri][hasChild] = []
-            #for each child in the first level
-            for child in item.children:
-                writeRecursive(dataCopy, sortedList, dictionary, child, dataCopy[item.uri][hasChild])
+            parent = writeRecursive(item, sortedList, dictionary)
+            jsonData[item.uri] = parent
+    f = open("t1-revised.json", "w")
+    f.write(json.dumps(jsonData, sort_keys=True, indent=4, separators=(',', ': ')))
+    f.close()
                 
-    #prune all the ones that don't have children
-    for key in dataCopy.keys():
-        if ((dictionary[key].hasChildren) == False):
-            dataCopy.pop(key, None)
-    pprint(json.dumps(dataCopy))
-    
-def writeRecursive(dataCopy, sortedList, dictionary, uri, childArray):
-    #see if the next layer has children, if it does, recursive another level, if it doesn't, just append to the child array
-    
-    if(dictionary[uri].hasChildren):
-        for child in dictionary[uri].children:
-                writeRecursive(dataCopy, sortedList, dictionary, child, dataCopy[uri][hasChild])
-    
-    childArray.append(dataCopy[uri])
-    
-    
+             
+def writeRecursive(item, sortedList, dictionary):
+    itemDictionary = {}
+    itemDictionary["ID"] = item.ID
+    itemDictionary["description"] = item.description
+    itemDictionary["subject"] = item.subject
+    itemDictionary["educationLevel"] = item.educationLevel
+    itemDictionary["uri"] = item.uri
+    itemDictionary["children"] = []
+    for child in item.children:
+        itemDictionary["children"].append(writeRecursive(dictionary[child], sortedList, dictionary))
+        
+    return itemDictionary
 #t1-s1
 t1s1 = pd.read_csv("data/t1-s1.csv")
 uniqueSubjectNotations = pd.unique(t1s1.subjectNotation.ravel())
@@ -110,7 +133,7 @@ for item in l:
 # for item in l:
 #     print("{} {}".format(item.ID, item.children))
 
-writeJson(t1, l, dictionary)
-
+#writeJson(t1, l, dictionary)
+writeJsonFromList(l, dictionary)
 #t1[t1root][hasChild][0]["value"]
 
