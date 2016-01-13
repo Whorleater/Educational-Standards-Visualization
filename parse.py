@@ -85,8 +85,14 @@ def printNode(l, data, node, level):
 #     childArray.append(dataCopy[uri])
 #
     
-def writeJsonFromList(sortedList, dictionary): 
+def writeJsonFromList(data, root): 
     jsonData = {}
+    sortedList = []
+    printNode(sortedList, data, root, 0)
+    dictionary = {}
+    for item in sortedList:
+        dictionary[item.uri] = item
+        
     for item in sortedList: 
         if (len(item.ID) == 2):
             parent = writeRecursive(item, sortedList, dictionary)
@@ -118,22 +124,8 @@ uniqueSubjectNotations.sort()
 #t1.json
 with open("data/t1.json") as t1_file:
     t1 = json.load(t1_file)
-    
-#pprint(t1["http://asn.jesandco.org/resources/D10003B9"]['http://purl.org/gem/qualifiers/hasChild'][0]["value"])
-#print("\n\n")
-#pprint(t1[t1["http://asn.jesandco.org/resources/D10003B9"]['http://purl.org/gem/qualifiers/hasChild'][0]["value"]]) 
-
 t1root = "http://asn.jesandco.org/resources/D10003B9"
 
-l = []
-printNode(l, t1, t1root, 0)
-dictionary = {}
-for item in l:
-    dictionary[item.uri] = item
-# for item in l:
-#     print("{} {}".format(item.ID, item.children))
 
-#writeJson(t1, l, dictionary)
-writeJsonFromList(l, dictionary)
-#t1[t1root][hasChild][0]["value"]
+writeJsonFromList(t1, t1root)
 
