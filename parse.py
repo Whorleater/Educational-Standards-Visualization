@@ -58,7 +58,8 @@ def printNode(l, data, node, level):
 
 #dataLocation is a str to where the file is
 #root is the root of the tree
-def writeJsonFromList(dataLocation, root): 
+#outputName is what the exit json file should be
+def writeJsonFromList(dataLocation, root, outputName): 
     with open(dataLocation) as data_file:
         data = json.load(data_file)
     jsonData = {}
@@ -72,7 +73,7 @@ def writeJsonFromList(dataLocation, root):
         if (len(item.ID) == 2):
             parent = writeRecursive(item, sortedList, dictionary)
             jsonData[item.uri] = parent
-    f = open("t1-revised.json", "w")
+    f = open("revised-data/{}".format(outputName), "w")
     f.write(json.dumps(jsonData, sort_keys=True, indent=4, separators=(',', ': ')))
     f.close()
                 
@@ -99,5 +100,7 @@ uniqueSubjectNotations.sort()
 #t1.json
 
 t1root = "http://asn.jesandco.org/resources/D10003B9"
-writeJsonFromList("data/t1.json", t1root)
+writeJsonFromList("data/t1.json", t1root, "t1.json")
 
+#t2.json
+t2root = ""
