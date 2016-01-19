@@ -10,3 +10,6 @@
 - See [http://bl.ocks.org/robschmuecker/7926762](http://bl.ocks.org/robschmuecker/7926762) for an idea on zoomable layouts
 - Need to change the tree values
 - Tree visualization unfit for data, back to [sankey diagram](http://bost.ocks.org/mike/sankey/)
+- possibly a collapsable sankey diagram? 
+- maybe [cytoscape](http://js.cytoscape.org/)?
+- see [http://marvl.infotech.monash.edu/webcola/examples/browsemovies.html](http://marvl.infotech.monash.edu/webcola/examples/browsemovies.html)
