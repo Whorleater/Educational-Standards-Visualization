@@ -95,33 +95,98 @@ def writeRecursive(item, sortedList, dictionary):
     for child in item.children:
         itemDictionary["children"].append(writeRecursive(dictionary[child], sortedList, dictionary))    
     return itemDictionary
+    
+    
+def getNodes(dataLocation, root, crosswalkData):
+    sortedList = []
+    nodes = []
+    
+    with open(dataLocation) as data_file:
+        data = json.load(data_file)
+    printNode(sortedList, data, root, 0)
+    
+    dictionary = {}
+    for item in sortedList:
+        dictionary[item.uri] = item
+    
+    uniqueSubjectNotations = pd.unique(crosswalkData.subjectNotation.ravel())
+    uniqueSubjectNotations.sort()
+    
+    for item in uniqueSubjectNotations:
+        item = item[:-2]
+    
+    #adds all the parents to the nodes list
+    parents = getParents(sortedList, uniqueSubjectNotations)
+    for parent in parents:
+        parentDict = {}
+        parentDict["type"] = parent.ID
+        parentDict["id"] = parent.ID
+        parentDict["parent"] = None
+        parentDict["name"] = parent.ID
+        parentDict["description"] = parent.description
+        nodes.append(parentDict)
+    
+    #adds all the childrens to the nodes list
+    children = getChildren(sortedList)
+    for child in 
+
+def getParents(sortedList, childList):
+    parentList = []
+    for item in sortedList:
+        if (item.hasChildren == True):
+            parentList.append(item)
+    return parentList
+    
+def getChildren(sortedList):
+    childrenList = []
+    for item in sortedList:
+        if (item.hasChildren == False):
+            childrenList.append(item)
+    return childrenList
 #t1-s1
 t1s1 = pd.read_csv("data/t1-s1.csv")
-uniqueSubjectNotations = pd.unique(t1s1.subjectNotation.ravel())
+getNodes("data/t1.json", "http://asn.jesandco.org/resources/D10003B9", t1s1)
+#
+# for item in uniqueSubjectNotations:
+#     dict = {}
+#     dict["type"] = item
+#     dict["id"] = item
+#     dict["parent"] = None
+#     dict["name"] = item
+#     nodes.append(dict)
+#
+# for item in uniqueSubjectNotations:
+#     for index, row in t1s1[t1s1.subjectNotation == item].iterrows():
+#         dict = {}
+#         dict["type"] = item
+#         dict["id"] =
+# print(uniqueSubjectNotations)
+# print(len(uniqueSubjectNotations))
+
+#t2-s1
+t2s1 = pd.read_csv("data/t2-s1.csv")
+uniqueSubjectNotations = pd.unique(t2s1.subjectNotation.ravel())
 uniqueSubjectNotations.sort()
-#print(uniqueSubjectNotations)
-#print(len(uniqueSubjectNotations))
-
-#t1.json
-t1root = "http://asn.jesandco.org/resources/D10003B9"
-writeJsonFromList("data/t1.json", t1root, "t1.json")
-
-#t2.json
-t2root = "http://asn.jesandco.org/resources/D100029D"
-writeJsonFromList("data/t2.json", t2root, "t2.json")
-
-#t3.json
-t3root = "http://asn.jesandco.org/resources/D1000124"
-writeJsonFromList("data/t3.json", t3root, "t3.json")
-
-#t4.json
-t4root = "http://asn.jesandco.org/resources/D1000379"
-writeJsonFromList("data/t4.json", t4root, "t4.json")
-
-#s1.json
-s1root = "http://asn.jesandco.org/resources/D10003FB"
-writeJsonFromList("data/s1.json", s1root, "s1.json")
-
-#s2.json 
-s2root = "http://asn.jesandco.org/resources/D10003FC"
-writeJsonFromList("data/s2.json", s2root, "s2.json")
+# #t1.json
+# t1root = "http://asn.jesandco.org/resources/D10003B9"
+# writeJsonFromList("data/t1.json", t1root, "t1.json")
+#
+# #t2.json
+# t2root = "http://asn.jesandco.org/resources/D100029D"
+# writeJsonFromList("data/t2.json", t2root, "t2.json")
+#
+# #t3.json
+# t3root = "http://asn.jesandco.org/resources/D1000124"
+# writeJsonFromList("data/t3.json", t3root, "t3.json")
+#
+# #t4.json
+# t4root = "http://asn.jesandco.org/resources/D1000379"
+# writeJsonFromList("data/t4.json", t4root, "t4.json")
+#
+# #s1.json
+# s1root = "http://asn.jesandco.org/resources/D10003FB"
+# writeJsonFromList("data/s1.json", s1root, "s1.json")
+#
+# #s2.json
+# s2root = "http://asn.jesandco.org/resources/D10003FC"
+# writeJsonFromList("data/s2.json", s2root, "s2.json")
