@@ -9,3 +9,4 @@
 - Tree layout is supposed to replicate: [http://asn.jesandco.org/resources/D1000379](http://asn.jesandco.org/resources/D1000379)
 - See [http://bl.ocks.org/robschmuecker/7926762](http://bl.ocks.org/robschmuecker/7926762) for an idea on zoomable layouts
 - Need to change the tree values
+- Tree visualization unfit for data, back to [sankey diagram](http://bost.ocks.org/mike/sankey/)
