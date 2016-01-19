@@ -98,51 +98,64 @@ def writeRecursive(item, sortedList, dictionary):
     
     
 def getNodes(dataLocation, root, crosswalkData):
-    sortedList = []
     nodes = []
-    
+    links = []
+    parentsList = []
+    for index, row in crosswalkData.iterrows():
+        subject = {}
+        subject["type"] = str(row["subjectNotation"])[:-2]
+        subject["id"] = str(row["subjectNotation"])
+        subject["parent"] = str(row["subjectNotation"])[:-2]
+        subject["name"] = row["subjectNotation"]
+        subject["description"] = row["subjectLabel"]
+        nodes.append(subject)
+        parentsList.append(str(row["subjectNotation"])[:-2])
+        
+        object = {}
+        object["type"] = str(row["objectNotation"])
+        object["id"] = str(row["objectNotation"])
+        object["parent"] = None
+        object["name"] = str(row["objectNotation"])
+        object["description"] = row["objectLabel"]
+        nodes.append(object)
+        
+        link = {}
+        link["source"] = str(row["subjectNotation"])
+        link["target"] = str(row["objectNotation"])
+        link["value"] = 10
+        links.append(link)
+        
     with open(dataLocation) as data_file:
         data = json.load(data_file)
+    sortedList = []
     printNode(sortedList, data, root, 0)
     
     dictionary = {}
     for item in sortedList:
         dictionary[item.uri] = item
     
-    uniqueSubjectNotations = pd.unique(crosswalkData.subjectNotation.ravel())
-    uniqueSubjectNotations.sort()
-    
-    for item in uniqueSubjectNotations:
-        item = item[:-2]
-    
-    #adds all the parents to the nodes list
-    parents = getParents(sortedList, uniqueSubjectNotations)
-    for parent in parents:
-        parentDict = {}
-        parentDict["type"] = parent.ID
-        parentDict["id"] = parent.ID
-        parentDict["parent"] = None
-        parentDict["name"] = parent.ID
-        parentDict["description"] = parent.description
-        nodes.append(parentDict)
-    
-    #adds all the childrens to the nodes list
-    children = getChildren(sortedList)
-    for child in 
-
-def getParents(sortedList, childList):
-    parentList = []
+    plist = []
+    for item in parentsList:
+        plist.append(item[:-1])
+    parentsList = parentsList + plist
+    parentsSet = set(parentsList)
     for item in sortedList:
-        if (item.hasChildren == True):
-            parentList.append(item)
-    return parentList
+        if (item.hasChildren == True and item.ID in parentsSet):
+            parent = {}
+            parent["type"] = str(item.ID)
+            parent["id"] = str(item.ID)
+            if (len(item.ID) > 2):
+                parent["parent"] = str(item.ID[:-1])
+            else:
+                parent["parent"] = None
+            parent["name"] = str(item.ID)
+            parent["description"] = str(item.description)
+            nodes.append(parent)
+            
     
-def getChildren(sortedList):
-    childrenList = []
-    for item in sortedList:
-        if (item.hasChildren == False):
-            childrenList.append(item)
-    return childrenList
+    pprint(links)
+    #pprint(parentsSet)
+    
 #t1-s1
 t1s1 = pd.read_csv("data/t1-s1.csv")
 getNodes("data/t1.json", "http://asn.jesandco.org/resources/D10003B9", t1s1)
