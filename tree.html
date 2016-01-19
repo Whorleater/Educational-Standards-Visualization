@@ -66,6 +66,23 @@ d3.json("revised-data/s1.json", function(error, flare) {
   update(root);
 });
 
+function shorten(d) {
+    var str = d;
+    if (d.length > 25)
+    {
+        str = d.slice(0,25) + "...";
+    }
+    return str;
+};
+
+function createTooltip(d) {
+    var str = d.name
+    if (d.ID != "") {
+        str = d.ID + "\n" + d.name
+    }
+    return str;
+};
+
 d3.select(self.frameElement).style("height", "800px");
 
 function update(source) {
@@ -89,14 +106,18 @@ function update(source) {
 
   nodeEnter.append("circle")
       .attr("r", 1e-6)
-      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
+      .append("svg:title")
+      .text(function (d) {return createTooltip(d)});
 
   nodeEnter.append("text")
       .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
       .attr("dy", ".35em")
       .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-      .text(function(d) { return (d.name).slice(0,30) + "\n" +  (d.name).slice(30) })
-      .style("fill-opacity", 1e-6);
+      .text(function(d) { return shorten(d.name) })
+      .style("fill-opacity", 1e-6)
+      .append("svg:title")
+      .text(function (d) {return createTooltip(d)});
 
   // Transition nodes to their new position.
   var nodeUpdate = node.transition()
@@ -168,3 +189,4 @@ function click(d) {
 }
 
 </script>
+
