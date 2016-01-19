@@ -13,3 +13,4 @@
 - possibly a collapsable sankey diagram? 
 - maybe [cytoscape](http://js.cytoscape.org/)?
 - see [http://marvl.infotech.monash.edu/webcola/examples/browsemovies.html](http://marvl.infotech.monash.edu/webcola/examples/browsemovies.html)
+- [HIVE PLOTS](http://bost.ocks.org/mike/hive/)
