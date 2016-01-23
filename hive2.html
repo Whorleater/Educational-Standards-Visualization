@@ -1,32 +1,61 @@
 <!DOCTYPE html>
+<html>
 <meta charset="utf-8">
+<title>Hive Plots</title>
 <style>
 
-.link {
-  fill: none;
-  stroke-width: 1.5px;
-}
-
-.axis, .node {
+.axis {
   stroke: #000;
   stroke-width: 1.5px;
 }
 
+.node circle {
+  stroke: #000;
+}
+
+.link {
+  fill: none;
+  stroke: #999;
+  stroke-width: 1.5px;
+  stroke-opacity: .3;
+}
+
+.link.active {
+  stroke: red;
+  stroke-width: 2px;
+  stroke-opacity: 1;
+}
+
+.node circle.active {
+  stroke: red;
+  stroke-width: 3px;
+}
+body p {
+    margin-left:200px;
+    margin-right:200px;
+}
 </style>
+
+
+
 <body>
+    <p id="chart"></p>
+</body>
+
+
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="d3.hive.min.js"></script>
 <script>
-var width = window.InnerWidth,
-    height = window.InnerHeight,
+var width = 1000,
+    height = 1000,
     innerRadius = 40,
     outerRadius = 640,
     majorAngle = 2 * Math.PI / 3,
     minorAngle = 1 * Math.PI / 12;
 
 var angle = d3.scale.ordinal()
-    .domain(["source", "source-target", "target-source", "target"])
-    .range([0, majorAngle - minorAngle, majorAngle + minorAngle, 2 * majorAngle]);
+    .domain(["source", "target-source", "target"])
+    .range([0, majorAngle - minorAngle, 2 * majorAngle]);
 
 var radius = d3.scale.linear()
     .range([innerRadius, outerRadius]);
@@ -65,17 +94,28 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
   console.log(nodes);
   // Determine the type of each node, based on incoming and outgoing links.
   nodes.forEach(function(node) {
-    if (node.source && node.target) {
-      node.type = node.source.type = "target-source";
-      node.target.type = "source-target";
-    } else if (node.source) {
-      node.type = node.source.type = "source";
-    } else if (node.target) {
-      node.type = node.target.type = "target";
-    } else {
-      node.connectors = [{node: node}];
-      node.type = "source";
-    }
+      if (node.type == "s1") {
+          node.type = "target";
+      }
+      else if (node.type == "t2") {
+          node.connectors = [{node: node}]
+          node.type = "target-source";
+      }
+      else {
+          node.connectors = [{node: node}]
+          node.type = "source";
+      }
+    // if (node.source && node.target) {
+    //   node.type = node.source.type = "target-source";
+    //   node.target.type = "source-target";
+    // } else if (node.source) {
+    //   node.type = node.source.type = "source";
+    // } else if (node.target) {
+    //   node.type = node.target.type = "target";
+    // } else {
+    //   node.connectors = [{node: node}];
+    //   node.type = "source";
+    // }
   });
 
   // Initialize the info display.
@@ -94,7 +134,7 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
       .entries(nodes);
 
   // Duplicate the target-source axis as source-target.
-//  nodesByType.push({key: "source-target", values: nodesByType[2].values});
+  //nodesByType.push({key: "source-target", values: nodesByType[2].values});
 
   // Compute the rank for each type, with padding between packages.
   nodesByType.forEach(function(type) {
@@ -109,27 +149,27 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
   // Set the radius domain.
   radius.domain(d3.extent(nodes, function(d) { return d.index; }));
 
-  // Draw the axes.
-  svg.selectAll(".axis")
-      .data(nodesByType)
-    .enter().append("line")
-      .attr("class", "axis")
-      .attr("transform", function(d) { return "rotate(" + degrees(angle(d.key)) + ")"; })
-      .attr("x1", radius(-2))
-      .attr("x2", function(d) { return radius(d.count + 2); });
+  // // Draw the axes.
+  // svg.selectAll(".axis")
+  //     .data(nodesByType)
+  //   .enter().append("line")
+  //     .attr("class", "axis")
+  //     .attr("transform", function(d) { return "rotate(" + degrees(angle(d.key)) + ")"; })
+  //     .attr("x1", radius(-2))
+  //     .attr("x2", function(d) { return radius(d.count + 2); });
 
   // Draw the links.
-  svg.append("g")
-      .attr("class", "links")
-    .selectAll(".link")
-      .data(links)
-    .enter().append("path")
-      .attr("class", "link")
-      .attr("d", link()
-      .angle(function(d) { return angle(d.type); })
-      .radius(function(d) { return radius(d.node.index); }))
-      .on("mouseover", linkMouseover)
-      .on("mouseout", mouseout);
+  // svg.append("g")
+  //     .attr("class", "links")
+  //   .selectAll(".link")
+  //     .data(links)
+  //   .enter().append("path")
+  //     .attr("class", "link")
+  //     .attr("d", link()
+  //     .angle(function(d) { return angle(d.type); })
+  //     .radius(function(d) { return radius(d.node.index); }))
+  //     .on("mouseover", linkMouseover)
+  //     .on("mouseout", mouseout);
 
   // Draw the nodes. Note that each node can have up to two connectors,
   // representing the source (outgoing) and target (incoming) links.
@@ -148,6 +188,16 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
       .attr("r", 4)
       .on("mouseover", nodeMouseover)
       .on("mouseout", mouseout);
+     
+  // svg.append("g")
+  //     .attr("class", "nodes")
+  //   .selectAll(".node")
+  //     .data(nodes)
+  //   .enter().append("g")
+  //     .attr("class", "node")
+  //     .style("fill", "blue")
+  //   .selectAll("circle")
+  //     .data(function(d) {return d.connectors})
 
   // Highlight the link and connected nodes on mouseover.
   function linkMouseover(d) {

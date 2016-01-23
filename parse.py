@@ -99,11 +99,12 @@ def writeRecursive(item, sortedList, dictionary):
     
 def getNodes(dataLocation, root, cData1, cData2):
     nodes = []
-    links = []
+    entered = set()
     parentsList = []
-    for index, row in crosswalkData.iterrows():
+    for index, row in cData1.iterrows():
         subject = {}
-        #subject["type"] = str(row["subjectNotation"])[:-2]
+        i += 1;
+        subject["type"] = "t1"
         subject["id"] = str(row["subjectNotation"]).decode('utf-8', 'ignore').encode('utf-8')
         #subject["parent"] = str(row["subjectNotation"])[:-2]
         subject["name"] = row["subjectURI"].decode('utf-8', 'ignore').encode('utf-8')
@@ -113,15 +114,33 @@ def getNodes(dataLocation, root, cData1, cData2):
         # parentsList.append(str(row["subjectNotation"])[:-2])
         
         object = {}
-        #object["type"] = str(row["objectNotation"])
+        object["type"] = "s1"
         object["id"] = str(row["objectNotation"]).decode('utf-8', 'ignore').encode('utf-8')
         #object["parent"] = None
         object["name"] = str(row["objectURI"]).decode('utf-8', 'ignore').encode('utf-8')
         object["description"] = str(row["objectLabel"]).decode('utf-8', 'ignore').encode('utf-8')
         object["imports"] = []
+        entered.add(object["name"])
         nodes.append(object)
         
+    for index, row in cData2.iterrows(): 
+        subject = {}
+        subject["type"] = "t2"
+        subject["id"] = str(row["subjectNotation"]).decode('utf-8', 'ignore').encode('utf-8')
+        subject["name"] = row["subjectURI"].decode('utf-8', 'ignore').encode('utf-8')
+        subject["description"] = str(row["subjectLabel"]).decode('utf-8', 'ignore').encode('utf-8')
+        subject["imports"] = [str(row["objectURI"]).decode('utf-8', 'ignore').encode('utf-8')]
+        nodes.append(subject)
         
+        object = {}
+        object["name"] = str(row["objectURI"]).decode('utf-8', 'ignore').encode('utf-8')
+        if object["name"] not in entered:
+            object["type"] = "s1"
+            object["id"] = str(row["objectNotation"]).decode('utf-8', 'ignore').encode('utf-8')
+            object["description"] = str(row["objectLabel"]).decode('utf-8', 'ignore').encode('utf-8')
+            object["imports"] = []
+            nodes.append(object)
+           
     with open(dataLocation) as data_file:
         data = json.load(data_file)
     sortedList = []
@@ -149,7 +168,8 @@ def getNodes(dataLocation, root, cData1, cData2):
     
 #t1-s1
 t1s1 = pd.read_csv("data/t1-s1.csv")
-getNodes("data/t1.json", "http://asn.jesandco.org/resources/D10003B9", t1s1)
+t2s1 = pd.read_csv("data/t2-s1.csv")
+getNodes("data/t1.json", "http://asn.jesandco.org/resources/D10003B9", t1s1, t2s1)
 #
 # for item in uniqueSubjectNotations:
 #     dict = {}
