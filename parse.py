@@ -97,33 +97,30 @@ def writeRecursive(item, sortedList, dictionary):
     return itemDictionary
     
     
-def getNodes(dataLocation, root, crosswalkData):
+def getNodes(dataLocation, root, cData1, cData2):
     nodes = []
     links = []
     parentsList = []
     for index, row in crosswalkData.iterrows():
         subject = {}
-        subject["type"] = str(row["subjectNotation"])[:-2]
-        subject["id"] = str(row["subjectNotation"])
-        subject["parent"] = str(row["subjectNotation"])[:-2]
-        subject["name"] = row["subjectNotation"]
-        subject["description"] = row["subjectLabel"]
+        #subject["type"] = str(row["subjectNotation"])[:-2]
+        subject["id"] = str(row["subjectNotation"]).decode('utf-8', 'ignore').encode('utf-8')
+        #subject["parent"] = str(row["subjectNotation"])[:-2]
+        subject["name"] = row["subjectURI"].decode('utf-8', 'ignore').encode('utf-8')
+        subject["description"] = str(row["subjectLabel"]).decode('utf-8', 'ignore').encode('utf-8')
+        subject["imports"] = [str(row["objectURI"]).decode('utf-8', 'ignore').encode('utf-8')]
         nodes.append(subject)
-        parentsList.append(str(row["subjectNotation"])[:-2])
+        # parentsList.append(str(row["subjectNotation"])[:-2])
         
         object = {}
-        object["type"] = str(row["objectNotation"])
-        object["id"] = str(row["objectNotation"])
-        object["parent"] = None
-        object["name"] = str(row["objectNotation"])
-        object["description"] = row["objectLabel"]
+        #object["type"] = str(row["objectNotation"])
+        object["id"] = str(row["objectNotation"]).decode('utf-8', 'ignore').encode('utf-8')
+        #object["parent"] = None
+        object["name"] = str(row["objectURI"]).decode('utf-8', 'ignore').encode('utf-8')
+        object["description"] = str(row["objectLabel"]).decode('utf-8', 'ignore').encode('utf-8')
+        object["imports"] = []
         nodes.append(object)
         
-        link = {}
-        link["source"] = str(row["subjectNotation"])
-        link["target"] = str(row["objectNotation"])
-        link["value"] = 10
-        links.append(link)
         
     with open(dataLocation) as data_file:
         data = json.load(data_file)
@@ -133,27 +130,21 @@ def getNodes(dataLocation, root, crosswalkData):
     dictionary = {}
     for item in sortedList:
         dictionary[item.uri] = item
-    
-    plist = []
-    for item in parentsList:
-        plist.append(item[:-1])
-    parentsList = parentsList + plist
-    parentsSet = set(parentsList)
-    for item in sortedList:
-        if (item.hasChildren == True and item.ID in parentsSet):
-            parent = {}
-            parent["type"] = str(item.ID)
-            parent["id"] = str(item.ID)
-            if (len(item.ID) > 2):
-                parent["parent"] = str(item.ID[:-1])
-            else:
-                parent["parent"] = None
-            parent["name"] = str(item.ID)
-            parent["description"] = str(item.description)
-            nodes.append(parent)
-            
-    
-    pprint(links)
+    #pprint(nodes)
+    with open("revised-data/t1-s1.json", "w") as out:
+        out.write(json.dumps(nodes, sort_keys=True, indent=4, separators=(',', ': ')))
+#         for node in nodes:
+#             # stringF = {"name" : {}, "id" : {}, "description" : {}, "imports" : [{}]}
+#  #            #print(node["name"], node["id"], node["description"], node["imports"]))
+#             name = node["name"]
+#             id = node["id"]
+#             desc = node["description"]
+#             imports = node["imports"]
+#             print(name + id + desc + imports)
+# #            out.write(stringF.format(name, id, desc, imports))
+#             out.write(json.dumps(node, sort_keys=True, indent=4, separators=(',', ': ')) + ",")
+    #pprint(nodes)
+    #pprint(links)
     #pprint(parentsSet)
     
 #t1-s1
@@ -177,9 +168,9 @@ getNodes("data/t1.json", "http://asn.jesandco.org/resources/D10003B9", t1s1)
 # print(len(uniqueSubjectNotations))
 
 #t2-s1
-t2s1 = pd.read_csv("data/t2-s1.csv")
-uniqueSubjectNotations = pd.unique(t2s1.subjectNotation.ravel())
-uniqueSubjectNotations.sort()
+# t2s1 = pd.read_csv("data/t2-s1.csv")
+# uniqueSubjectNotations = pd.unique(t2s1.subjectNotation.ravel())
+# uniqueSubjectNotations.sort()
 # #t1.json
 # t1root = "http://asn.jesandco.org/resources/D10003B9"
 # writeJsonFromList("data/t1.json", t1root, "t1.json")
@@ -203,3 +194,4 @@ uniqueSubjectNotations.sort()
 # #s2.json
 # s2root = "http://asn.jesandco.org/resources/D10003FC"
 # writeJsonFromList("data/s2.json", s2root, "s2.json")
+

@@ -40,7 +40,7 @@ var svg = d3.select("#chart").append("svg")
     .attr("transform", "translate(" + outerRadius * .20 + "," + outerRadius * .57 + ")");
 
 // Load the data and display the plot!
-d3.json("flare-imports.json", function(nodes) {
+d3.json("revised-data/t1-s1.json", function(nodes) {
   var nodesByName = {},
       links = [],
       formatNumber = d3.format(",d"),
@@ -62,7 +62,7 @@ d3.json("flare-imports.json", function(nodes) {
       links.push({source: source.source, target: target.target});
     });
   });
-
+  console.log(nodes);
   // Determine the type of each node, based on incoming and outgoing links.
   nodes.forEach(function(node) {
     if (node.source && node.target) {
@@ -94,7 +94,7 @@ d3.json("flare-imports.json", function(nodes) {
       .entries(nodes);
 
   // Duplicate the target-source axis as source-target.
-  nodesByType.push({key: "source-target", values: nodesByType[2].values});
+//  nodesByType.push({key: "source-target", values: nodesByType[2].values});
 
   // Compute the rank for each type, with padding between packages.
   nodesByType.forEach(function(type) {
