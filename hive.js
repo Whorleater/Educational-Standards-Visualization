@@ -14,6 +14,7 @@ var angle = d3.scale.ordinal().domain(d3.range(4)).rangePoints([0, 2 * Math.PI])
     radius = d3.scale.linear().range([innerRadius, outerRadius]),
     color = d3.scale.category10().domain(d3.range(20));
 
+//gets the data;
 d3.json("revised-data/t1-s1.json", function(nodes) {
     var nodesByName = {},
         links = [],
@@ -46,6 +47,7 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
         });
     });
 
+    //sorts the nodes into their own lines
     var nodesByType = d3.nest()
         .key(function(d) {
             return d.type;
@@ -53,26 +55,32 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
         .sortKeys(d3.ascending)
         .entries(nodes);
     
+    //should group the nodes (nonfunctional currently)
     nodesByType.forEach(function(type) {
-      var lastName = type.values[0].packageName, count = 0;
+      var lastName = type.values[0].id, count = 0;
       type.values.forEach(function(d, i) {
-        if (d.packageName != lastName) lastName = d.packageName, count += 2;
+          
+        if (d.id != lastName) {
+            
+            lastName = d.id, count += 2;
+        } 
         d.index = count++;
       });
       type.count = count - 1;
     });
-    
+        
     radius.domain(d3.extent(nodes, function(d) { return d.index; }));
-    //
-    // console.log(nodesByName);
-     //console.log(links);
 
-    var svg = d3.select("body").append("svg")
+     var info = d3.select("#info").text(defaultInfo = "Showing " + formatNumber(links.length) + " links among " + formatNumber(nodes.length) + " nodes.");
+
+    //create the base svg
+    var svg = d3.select("#chart").append("svg")
         .attr("width", width)
         .attr("height", height)
         .append("g")
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
         
+    //axis
     svg.selectAll(".axis")
         .data(d3.range(3))
         .enter().append("line")
@@ -82,21 +90,35 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
         })
         .attr("x1", radius.range()[0])
         .attr("x2", radius.range()[1]);
-
+        
+    svg.append("text")
+        .text("S1")
+        .attr("transform", "rotate(" + 90 + ")");
+        
+    svg.append("text")
+        .text("T1")
+        .attr("transform", "rotate(" + 240 + ")");
+    
+    svg.append("text")
+        .text("T2")
+        .attr("transform", "rotate(" + 320 + ")");    
+    //links
     svg.append("g")
         .attr("class", "link")
     .selectAll(".link")
         .data(links)
-      .enter().append("path")
+    .enter().append("path")
         .attr("d", link()
         .angle(function(d) {  return angle(typeAngle[d.node.type]); })
         .radius(function(d) { return radius(d.node.index); }))
         .style("stroke", function(d) { return color(typeAngle[d.source.type]); })
+        .on("mouseover", linkMouseover)
+        .on("mouseout", mouseout)
     .append("text")
-        .text(function (d) {console.log(d); return createTooltip(d)});
-        ;
- 
+        .text(function (d) {return createTooltip(d)});
 
+ 
+    //nodes
     svg.selectAll(".node")
         .data(nodes)
         .enter().append("circle")
@@ -110,16 +132,45 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
         .attr("r", 3)
         .style("fill", function(d) {
             return color(typeAngle[d.type]);
-        });
+        })
+//        .on("mouseover", nodeMouseover)
+        .on("mouseout", mouseout);
+        
 
+    // Highlight the link and connected nodes on mouseover.
+    function linkMouseover(d) {
+        //console.log(svg.selectAll(".link"));
+        var currentLink;
+
+      svg.selectAll(".link").classed("active", function(p) { currentLink = d; return p === d; });
+      svg.selectAll(".node circle").classed("active", function(p) { return p === d.source || p === d.target; });
+      info.text(d.source.node.name + " → " + d.target.node.name);
+      console.log(currentLink);
+    }
+
+    // Highlight the node and connected links on mouseover.
+    function nodeMouseover(d) {
+        console.log(d);
+      svg.selectAll(".link").classed("active", function(p) { console.log(p); return p.source === d || p.target === d; });
+      d3.select(this).classed("active", true);
+      //info.text(d.node.name);
+    }
+
+    // Clear any highlighted nodes or links.
+    function mouseout() {
+      svg.selectAll(".active").classed("active", false);
+      // info.text(defaultInfo);
+    }
 });
 
+//writes the tooltip for the hover
 function createTooltip(d) {
     sourceInfo = d.source.id + ": " + d.source.description;
     targetInfo = d.target.id + ": " + d.target.description;
     connectionText = "\naligns to\n";
     return sourceInfo + connectionText + targetInfo;
 }
+
 
 function link() {
   var source = function(d) { return d.source; },

@@ -5,6 +5,7 @@
 .link {
   fill: none;
   stroke-width: .5px;
+  stroke-opacity: .5;
 }
 
 .axis, .node {
@@ -12,8 +13,27 @@
   stroke-width: 0.7;
 }
 
+.link.active {
+  stroke: red;
+  stroke-width: 500px;
+  stroke-opacity: 1;
+}
+
+.node circle.active {
+  stroke: red;
+  stroke-width: 3px;
+}
+
+body p {
+    margin-left:20px;
+    margin-right:20px;
+}
+
 </style>
 <body>
+    <p id="info"></p>
+    <p id="chart"></p>
+</body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="d3.hive.min.js"></script>
 <script src="hive.js"></script>
