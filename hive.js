@@ -1,5 +1,5 @@
 var width = window.innerWidth-window.innerWidth*.05,
-    height = window.innerHeight,
+    height = window.innerHeight-window.innerHeight*.2,
     innerRadius = 20,
     outerRadius = 1000;
 
@@ -19,7 +19,7 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
     var nodesByName = {},
         links = [],
         formatNumber = d3.format(",d"),
-        defaultInfo;
+        defaultInfo, defaultDetails;
 
     // Construct an index by node name.
     nodes.forEach(function(d) {
@@ -72,6 +72,10 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
     radius.domain(d3.extent(nodes, function(d) { return d.index; }));
 
      var info = d3.select("#info").text(defaultInfo = "Showing " + formatNumber(links.length) + " links among " + formatNumber(nodes.length) + " nodes.");
+     
+
+     var sourceInfo = d3.select("#source").text(defaultDetails = "Nothing selected.");
+     var targetInfo = d3.select("#target").text(defaultDetails = "Nothing selected.")
 
     //create the base svg
     var svg = d3.select("#chart").append("svg")
@@ -102,12 +106,14 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
     svg.append("text")
         .text("T2")
         .attr("transform", "rotate(" + 320 + ")");    
-    //links
+        
+    //links (loops through each one, calls the links function)
     svg.append("g")
         .attr("class", "link")
     .selectAll(".link")
         .data(links)
     .enter().append("path")
+      .attr("class", "link")
         .attr("d", link()
         .angle(function(d) {  return angle(typeAngle[d.node.type]); })
         .radius(function(d) { return radius(d.node.index); }))
@@ -117,49 +123,44 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
     .append("text")
         .text(function (d) {return createTooltip(d)});
 
- 
-    //nodes
-    svg.selectAll(".node")
+
+    svg.append("g")
+        .attr("class", "nodes")
+      .selectAll(".node")
         .data(nodes)
-        .enter().append("circle")
+      .enter().append("g")
         .attr("class", "node")
-        .attr("transform", function(d) {
-            return "rotate(" + degrees(angle(typeAngle[d.type])) + ")";
-        })
-        .attr("cx", function(d) {
-            return radius(d.index);
-        })
-        .attr("r", 3)
-        .style("fill", function(d) {
-            return color(typeAngle[d.type]);
-        })
-//        .on("mouseover", nodeMouseover)
+        .style("fill", function(d) { return color(typeAngle[d.type]) })
+      .selectAll("circle")
+        .data(function(d) { return d.connectors; })
+      .enter().append("circle")
+        .attr("transform", function(d) {return "rotate(" + degrees(angle(typeAngle[d.node.type])) + ")"; })
+        .attr("cx", function(d) { return radius(d.node.index); })
+        .attr("r", 4)
+        .on("mouseover", nodeMouseover)
         .on("mouseout", mouseout);
-        
 
     // Highlight the link and connected nodes on mouseover.
     function linkMouseover(d) {
-        //console.log(svg.selectAll(".link"));
-        var currentLink;
-
       svg.selectAll(".link").classed("active", function(p) { currentLink = d; return p === d; });
       svg.selectAll(".node circle").classed("active", function(p) { return p === d.source || p === d.target; });
       info.text(d.source.node.name + " → " + d.target.node.name);
-      console.log(currentLink);
+      sourceInfo.text(d.source.node.id + ": " + d.source.node.description);
+      targetInfo.text(d.target.node.id + ": " + d.target.node.description);
     }
 
     // Highlight the node and connected links on mouseover.
     function nodeMouseover(d) {
-        console.log(d);
       svg.selectAll(".link").classed("active", function(p) { console.log(p); return p.source === d || p.target === d; });
       d3.select(this).classed("active", true);
-      //info.text(d.node.name);
+      info.text(d.node.name);
     }
 
     // Clear any highlighted nodes or links.
     function mouseout() {
       svg.selectAll(".active").classed("active", false);
-      // info.text(defaultInfo);
+       info.text(defaultInfo);
+       details.text(defaultDetails);
     }
 });
 

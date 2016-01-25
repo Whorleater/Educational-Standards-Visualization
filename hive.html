@@ -2,20 +2,25 @@
 <meta charset="utf-8">
 <style>
 
-.link {
-  fill: none;
-  stroke-width: .5px;
-  stroke-opacity: .5;
+.axis {
+  stroke: #000;
+  stroke-width: 1.5px;
 }
 
-.axis, .node {
+.node circle {
   stroke: #000;
-  stroke-width: 0.7;
+}
+
+.link {
+  fill: none;
+  stroke: #999;
+  stroke-width: 1.5px;
+  stroke-opacity: .3;
 }
 
 .link.active {
   stroke: red;
-  stroke-width: 500px;
+  stroke-width: 2px;
   stroke-opacity: 1;
 }
 
@@ -24,15 +29,13 @@
   stroke-width: 3px;
 }
 
-body p {
-    margin-left:20px;
-    margin-right:20px;
-}
-
 </style>
 <body>
     <p id="info"></p>
     <p id="chart"></p>
+    <p id="source"></p>
+    <p id="alignment">Aligns to: </p>
+    <p id="target"></p>
 </body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="d3.hive.min.js"></script>
