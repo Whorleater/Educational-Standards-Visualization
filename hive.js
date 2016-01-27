@@ -48,41 +48,50 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
     });
 
 
-    var nodesByID = d3.nest()
+
+
+    
+    //sorts the nodes into their own lines
+    // var nodesByType = d3.nest()
+    //     .key(function(d) {
+    //         return d.type;
+    //     })
+    //     .sortKeys(d3.ascending)
+    //     .entries(nodes);
+    //     console.log(nodesByType);
+    //
+    //
+    var nodesByType = d3.nest()
+        .key(function(d) {
+            return d.type;
+        })
         .key(function(d) {
             return d.id;
         })
         .sortKeys(d3.ascending)
         .entries(nodes);
 
-    
-    //sorts the nodes into their own lines
-    var nodesByType = d3.nest()
-        .key(function(d) {
-            return d.type;
-        })
-        .sortKeys(d3.ascending)
-        .entries(nodes);
+    // nodesByType.forEach(function(type) {
+    //     console.log(type);
+    //     var tempValues = type.values.sort(function(a, b) {return b.id - a.id;})
+    //     type.values = tempValues;
+    //     console.log(tempValues);
+    // });
 
-        console.log(nodesByType);
-        console.log(nodesByID);
-
-        
+    // console.log(nodesByType);
+    // console.log(nodesByID);
     //should group the nodes (nonfunctional currently)
     nodesByType.forEach(function(type) {
-        nodesByID.forEach(function(ID) {
-            var lastName = ID.values[0].id, count = 0;
+        var lastName = type.values[0].id, count = 0;
+        type.values.forEach(function(ID) {
             ID.values.forEach(function(d, i) {
-          
-              if (d.id != lastName) {
-            
-                  lastName = d.id, count += 2;
-              } 
-              d.index = count++;
-            });
-            ID.count = count - 1;
-        })
-      
+                if (d.id != lastName) {
+                    lastName = d.id, count += .01;
+                } 
+                d.index = count++;
+            }); 
+            type.count = count - 1;
+        });
     });
         
     radius.domain(d3.extent(nodes, function(d) { return d.index; }));
@@ -131,7 +140,7 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
     svg.append("g")
         .attr("class", "nodes")
       .selectAll(".node")
-        .data(nodes)
+        .data(nodesByID)
       .enter().append("g")
         .attr("class", "node")
         .style("fill", function(d) { return color(typeAngle[d.type]) })
@@ -139,10 +148,11 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
         .data(function(d) { return d.connectors; })
       .enter().append("circle")
         .attr("transform", function(d) {return "rotate(" + degrees(angle(typeAngle[d.node.type])) + ")"; })
-        .attr("cx", function(d) { return radius(d.node.index); })
+        .attr("cx", function(d) { console.log(d); return radius(d.node.index); })
         .attr("r", 4)
-        .on("mouseover", nodeMouseover)
+        //.on("mouseover", nodeMouseover)
         .on("mouseout", mouseout);
+        
 
     // Highlight the link and connected nodes on mouseover.
     function linkMouseover(d) {

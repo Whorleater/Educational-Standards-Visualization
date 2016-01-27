@@ -103,7 +103,6 @@ def getNodes(dataLocation, root, cData1, cData2):
     parentsList = []
     for index, row in cData1.iterrows():
         subject = {}
-        i += 1;
         subject["type"] = "t1"
         subject["id"] = str(row["subjectNotation"]).decode('utf-8', 'ignore').encode('utf-8')
         #subject["parent"] = str(row["subjectNotation"])[:-2]
@@ -170,6 +169,7 @@ def getNodes(dataLocation, root, cData1, cData2):
 t1s1 = pd.read_csv("data/t1-s1.csv")
 t2s1 = pd.read_csv("data/t2-s1.csv")
 getNodes("data/t1.json", "http://asn.jesandco.org/resources/D10003B9", t1s1, t2s1)
+pprint(pd.read_json("revised-data/t1-s1.json").summary())
 #
 # for item in uniqueSubjectNotations:
 #     dict = {}
