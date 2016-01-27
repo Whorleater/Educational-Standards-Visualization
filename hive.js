@@ -47,6 +47,15 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
         });
     });
 
+
+    var nodesByID = d3.nest()
+        .key(function(d) {
+            return d.id;
+        })
+        .sortKeys(d3.ascending)
+        .entries(nodes);
+
+    
     //sorts the nodes into their own lines
     var nodesByType = d3.nest()
         .key(function(d) {
@@ -54,19 +63,26 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
         })
         .sortKeys(d3.ascending)
         .entries(nodes);
-    
+
+        console.log(nodesByType);
+        console.log(nodesByID);
+
+        
     //should group the nodes (nonfunctional currently)
     nodesByType.forEach(function(type) {
-      var lastName = type.values[0].id, count = 0;
-      type.values.forEach(function(d, i) {
+        nodesByID.forEach(function(ID) {
+            var lastName = ID.values[0].id, count = 0;
+            ID.values.forEach(function(d, i) {
           
-        if (d.id != lastName) {
+              if (d.id != lastName) {
             
-            lastName = d.id, count += 2;
-        } 
-        d.index = count++;
-      });
-      type.count = count - 1;
+                  lastName = d.id, count += 2;
+              } 
+              d.index = count++;
+            });
+            ID.count = count - 1;
+        })
+      
     });
         
     radius.domain(d3.extent(nodes, function(d) { return d.index; }));
@@ -94,18 +110,6 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
         })
         .attr("x1", radius.range()[0])
         .attr("x2", radius.range()[1]);
-        
-    svg.append("text")
-        .text("S1")
-        .attr("transform", "rotate(" + 90 + ")");
-        
-    svg.append("text")
-        .text("T1")
-        .attr("transform", "rotate(" + 240 + ")");
-    
-    svg.append("text")
-        .text("T2")
-        .attr("transform", "rotate(" + 320 + ")");    
         
     //links (loops through each one, calls the links function)
     svg.append("g")
@@ -160,7 +164,6 @@ d3.json("revised-data/t1-s1.json", function(nodes) {
     function mouseout() {
       svg.selectAll(".active").classed("active", false);
        info.text(defaultInfo);
-       details.text(defaultDetails);
     }
 });
 
